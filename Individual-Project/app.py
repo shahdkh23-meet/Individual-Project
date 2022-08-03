@@ -12,18 +12,24 @@ app = Flask(
 app.config['SECRET_KEY'] = 'super-secret-key'
 
 
+
+@app.route('/' ,  methods=['GET', 'POST'])# '/' for the default page
+def login():
+    if request.method == 'POST':
+        username2 = request.form['username']
+        password2 = request.form['password']
+        if username2 == username and password2 == password :
+            return redirect(url_for('signin'))
+        else:
+            return render_template('signin.html')
+    else:
+        return render_template('signin.html')
+
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
-    error = ""
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        try:
-            login_session['user'] = python3auth.create_user_with_email_and_password(email, password)
-            return redirect(url_for('index_tweet'))
-        except:
-            error = "Authentication failed"
     return render_template("signin.html")
+
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -31,6 +37,12 @@ def design():
     return render_template("index.html")
 
 
+
+
+
+@app.route('/fashion')
+def fashion():
+    return render_template("fashion.html")
 
 
 
