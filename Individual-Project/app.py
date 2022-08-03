@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask import session as login_session
 import pyrebase
 
-Config = {
+config = {
   "apiKey": "AIzaSyAUPQTMIVupHhftwx1NgpbgcFY93rWyegM",
   "authDomain": "y2-project-b3ffb.firebaseapp.com",
   "projectId": "y2-project-b3ffb",
@@ -27,43 +27,44 @@ app.config['SECRET_KEY'] = 'super-secret-key'
 
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/signin', methods=['GET', 'POST'])
 def signin():
     error = ""
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
         try:
-            login_session['user'] = python3auth.create_user_with_email_and_password(email, password)
-            return redirect(url_for('signin'))
-            return render_template("signin.html")
-
-
-
+            login_session['user'] = auth.sign_in_with_email_and_password(email, password)
+            return render_template("index.html")
+        except:
+            error = "Authentication failed"
+    return render_template("signup.html")
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error = ""
     if request.method == 'POST':
-        Fullname = request.form['fullname']
+        full_name = request.form['fullname']
         email = request.form['email']
-        Name = request.form['name']
+        name = request.form['username']
         password = request.form['password']
+
         try:
-        login_session['user'] = python3auth.create_user_with_email_and_password(email, password)
-        user = {"name": Name, "bio": Bio, "full name": Fullname}
-        db.child("user").child(login_session['user']['localId']).set(user)
-        return redirect(url_for('index'))
+            login_session['user'] = auth.create_user_with_email_and_password(email, password)
+            user = {"name": name, "full name": full_name, "email": email, "password": password}
+            db.child("user").child(login_session['user']['localId']).set(user)
+            return redirect(url_for('index'))
         except:
             error = "Authentication failed"
             return error
-    return render_template('signup.html')
+    return render_template("signup.html")
 
 
-@app.route('/signin')
-def signin():
-    return render_template("signin.html")
 
 
 
@@ -71,7 +72,9 @@ def signin():
 def fashion():
     return render_template("fashion.html")
 
-
+@app.route('/shops')
+def shops():
+    return render_template("shops.html")
 
 
 
