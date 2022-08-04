@@ -38,7 +38,7 @@ def signin():
             return redirect(url_for('index'))
         except:
             error = "Authentication failed"
-    return render_template("signup.html")
+    return render_template("signin.html")
  
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -91,7 +91,9 @@ def friends():
 
 @app.route('/about')
 def about():
-    return render_template("about.html")
+    name = db.child("user").child(login_session['user']['localId']).child("name").get().val()
+    print(name)
+    return render_template("about.html", name = name )
 
 @app.route('/metgala')
 def metgala():
