@@ -10,7 +10,7 @@ config = {
   "messagingSenderId": "951219977529",
   "appId": "1:951219977529:web:fc1f8b4a10317131ca3ce8",
   "measurementId": "G-XPM1J4KDST",
-  "databaseURL":"https://console.firebase.google.com/project/y2-project-b3ffb/database/y2-project-b3ffb-default-rtdb/data/~2F"
+  "databaseURL":"https://y2-project-b3ffb-default-rtdb.europe-west1.firebasedatabase.app/"
 }
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
@@ -27,10 +27,6 @@ app.config['SECRET_KEY'] = 'super-secret-key'
 
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     error = ""
@@ -39,11 +35,11 @@ def signin():
         password = request.form['password']
         try:
             login_session['user'] = auth.sign_in_with_email_and_password(email, password)
-            return render_template("index.html")
+            return redirect(url_for('index'))
         except:
             error = "Authentication failed"
     return render_template("signup.html")
-
+ 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -56,7 +52,8 @@ def signup():
 
         try:
             login_session['user'] = auth.create_user_with_email_and_password(email, password)
-            user = {"name": name, "full name": full_name, "email": email, "password": password}
+            user = {"name": name, "full_ name": full_name, "email": email, "password": password}
+                
             db.child("user").child(login_session['user']['localId']).set(user)
             return redirect(url_for('index'))
         except:
@@ -66,7 +63,14 @@ def signup():
 
 
 
+@app.route('/index')
+def index():
+    return render_template("index.html")
 
+
+@app.route('/')
+def home():
+    return render_template("index.html")
 
 @app.route('/fashion')
 def fashion():
@@ -75,6 +79,27 @@ def fashion():
 @app.route('/shops')
 def shops():
     return render_template("shops.html")
+
+
+@app.route('/models')
+def models():
+    return render_template("models.html")
+
+@app.route('/friends')
+def friends():
+    return render_template("friends.html")
+
+@app.route('/about')
+def about():
+    return render_template("about.html")
+
+@app.route('/metgala')
+def metgala():
+    return render_template("metgala.html")
+
+
+
+
 
 
 
